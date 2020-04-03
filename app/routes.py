@@ -51,3 +51,25 @@ def roster():
         )
         selected = team_name if len(players) != 0 else selected
         return render_template("players.html", teams=team_names, players=players, selection=selected)
+        
+@app.route('/addPlayer', methods =['GET', 'POST'])
+def addPlayer():
+
+    if request.method == 'POST':
+        playerDetails = request.form
+        Roster_id = playerDetails['Roster_id']
+        First_name = playerDetails['First_name']
+        Last_name = playerDetails['Last_name']
+        Birth_year = playerDetails['Birth_year']
+        Email = playerDetails['Email']
+        Phone_num = playerDetails['Phone_num'])
+        
+    return render_template('addPlayer.html')
+    
+    
+
+@app.route('/manage', methods =['GET', 'POST'])
+def manage():
+
+        
+    return render_template('manage.html')
