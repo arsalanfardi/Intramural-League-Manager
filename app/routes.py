@@ -28,11 +28,7 @@ def index():
 
 @app.route('/players', methods=['GET', 'POST'])
 def roster():
-    team_names = db.execute(
-        "SELECT Team.team_name\
-            FROM Team\
-                ORDER BY Team.team_name"
-    )
+    team_names = get_teams()
     players = []
     selected = '' # saves selected value of dropdown list
     if request.method == 'GET':
@@ -51,7 +47,22 @@ def roster():
         )
         selected = team_name if len(players) != 0 else selected
         return render_template("players.html", teams=team_names, players=players, selection=selected)
-        
+
+@app.route('/schedule', methods = ['GET', 'POST'])
+def schedule():
+    selected=''
+    team_names = get_teams()
+    query = "SELECT Game.date, Game.time, Game.location, HomeTeam.team_name as home_team, AwayTeam.team_name as away_team, WinTeam.team_name as win_team\
+                FROM Game\
+                LEFT JOIN Team as HomeTeam ON Game.home_id = HomeTeam.team_id\
+                LEFT JOIN Team as AwayTeam on Game.away_id = AwayTeam.team_id\
+                LEFT JOIN Team as WinTeam on Game.winner_id = WinTeam.team_id"
+    order = "\nORDER BY Game.date, Game.time"
+
+    if request.method == 'GET':
+        games = db.execute(query + order)
+        return render_template("schedule.html", teams=team_names, games=games, selection=selected)
+    
 @app.route('/addPlayer', methods =['GET', 'POST'])
 def addPlayer():
 
@@ -73,3 +84,11 @@ def manage():
 
         
     return render_template('manage.html')
+
+def get_teams():
+    team_names = db.execute(
+        "SELECT Team.team_name\
+            FROM Team\
+                ORDER BY Team.team_name"
+    )
+    return team_names
