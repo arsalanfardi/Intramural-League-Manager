@@ -12,7 +12,7 @@
       {% if selection=='' %}
         <option value="NULL"> Select Team</option>
       {% else %}
-        <option value="NULL">{{selection}}</option>
+        <option value="{{selection}}">{{selection}}</option>
       {% endif %}
       {% for team in teams %}
         {% if team['team_name']!=selection %}
@@ -20,7 +20,7 @@
         {% endif %}
       {% endfor %}
     </select>
-    <input type="submit" value="Submit">
+    <button type="submit" class="btn btn-secondary btn-sm">Submit</button>
   </form>
 </div>
 

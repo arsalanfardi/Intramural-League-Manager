@@ -62,7 +62,7 @@ def addPlayer():
         Last_name = playerDetails['Last_name']
         Birth_year = playerDetails['Birth_year']
         Email = playerDetails['Email']
-        Phone_num = playerDetails['Phone_num'])
+        Phone_num = playerDetails['Phone_num']
         
     return render_template('addPlayer.html')
     
