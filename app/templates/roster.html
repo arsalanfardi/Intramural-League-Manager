@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Roster
+{% endblock %}
+
+{% block main %}
+
+    <table class="table">
+  <thead>
+    <tr>
+      <!--Team Dropdown-->
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Points</th>
+      <th scope="col">Assists</th>
+      <th scope="col">Rebounds</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for player in dbResults %}
+    <tr>
+      <td> {{ player.first_name}} </td>
+      <td> {{ player.last_name}} </td>
+      <td> {{ player.points}} </td>
+      <td> {{ player.assists}} </td>
+      <td> {{ player.rebounds}} </td>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+
+{% endblock %}

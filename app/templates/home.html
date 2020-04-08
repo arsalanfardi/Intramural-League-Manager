@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+    
+{% block main %}
+    <h1>WELCOME to DINOS 2020 Basketball League</h1>  
+
+    {% for entry in announcements %}
+      
+        <div class="card text-left" >
+            <div class="card-body">
+                <h5 class="card-title"> {{ entry.title }} </h5>
+                <p class="card-text" style="line-height:0.1">
+                    <font color="grey" size="2">
+                    {{ entry.date }}
+                    </font>
+                </p>
+                <p class="card-text">
+                    {{ entry.message }}
+                </p>
+            </div>
+        </div>
+        <div class="pb-3"></div>
+
+        
+    {% endfor %}
+    
+{% endblock main %}

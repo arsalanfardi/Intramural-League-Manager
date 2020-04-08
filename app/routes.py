@@ -18,6 +18,16 @@ def after_request(response):
 db = SQL("sqlite:///app/league.db")
 
 @app.route('/')
+def home():
+    # load announcements
+    result = db.execute(
+        "SELECT * FROM Announcements \
+            ORDER BY a_id DESC"
+        )
+    return render_template("home.html", announcements = result)
+
+
+# pass info in to index.html
 @app.route('/index')
 def index():
     test = db.execute(
@@ -62,7 +72,7 @@ def addPlayer():
         Last_name = playerDetails['Last_name']
         Birth_year = playerDetails['Birth_year']
         Email = playerDetails['Email']
-        Phone_num = playerDetails['Phone_num'])
+        Phone_num = playerDetails['Phone_num']
         
     return render_template('addPlayer.html')
     
