@@ -6,6 +6,9 @@ from app import app
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
+# Set secret key for session (enables flash functionality)
+app.secret_key = "secret key"
+
 # Ensure responses aren't cached
 @app.after_request
 def after_request(response):
@@ -95,10 +98,31 @@ def addPlayer():
 @app.route('/addGame', methods =['GET', 'POST'])
 def addGame():
     team_names = get_teams()
+    referees = get_referees()
     if request.method == 'POST':
-        pass
-    print("teams", team_names)
-    return render_template('addGame.html', teams=team_names)
+        if not null_request(request.form):
+            game_details = request.form
+            home_team = game_details['Home_team']
+            away_team = game_details['Away_team']
+            date = game_details['Date']
+            time = game_details['Time']
+            ref_first_name, ref_last_name = game_details['Referee'].split()
+            location = game_details['Location']
+            if home_team != away_team:
+                db.execute(
+                    "INSERT INTO Game (schedule_id, date, time, location, home_id, away_id, ref_id) \
+                        VALUES (1, ?, ?, ?, \
+                        (SELECT Team.team_id FROM Team WHERE Team.team_name=?),\
+                        (SELECT Team.team_id FROM Team WHERE Team.team_name=?),\
+                        (SELECT User.user_id FROM User WHERE User.first_name=? AND User.last_name=?))",
+                        date, time, location, home_team, away_team, ref_first_name, ref_last_name
+                )
+                flash("Successful submission!")
+            else:
+                flash("Invalid team entry")
+        else:
+            flash("Please enter all fields")
+    return render_template('addGame.html', teams=team_names, referees=referees)
 
 
 def get_teams():
@@ -108,3 +132,19 @@ def get_teams():
                 ORDER BY Team.team_name"
     )
     return team_names
+
+def get_referees():
+    referees = db.execute(
+          "SELECT User.first_name, User.last_name\
+            FROM Referee\
+            LEFT JOIN User on User.user_id = Referee.user_id"
+    )
+    return referees
+
+def null_request(request_form):
+    for k, v in request_form.items():
+        if len(request_form[k]) == 0:
+            print("Null found")
+            return True
+    print("no nulls")
+    return False

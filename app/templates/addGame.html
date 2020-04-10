@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Add Player
+    Add Game
 {% endblock %}
 
 {% block main %}
@@ -15,9 +15,9 @@
     <div class="main-block">
       <div class="left-part">
         <i class="fas fa-basketball-ball fa-6x"></i>
-        <h1 class="h1-manage p-3">Add a Game</h1>
+        <h1 class="h1-manage p-3">Add Game</h1>
       </div>
-      <form class="form-manage" method= "POST" action="/">
+      <form class="form-manage" method= "post">
         <div class="title">
           <i class="fas fa-pencil-alt"></i> 
           <h2>Enter Details Below</h2>
@@ -35,14 +35,24 @@
                 <option class="dropdown-content" value="{{team['team_name']}}">{{team['team_name']}}</option>
             {% endfor %}
           </select>
-            <input class="input-manage" type="text" name="Location" placeholder= "Location"/>
-            <input class="input-manage" type="date" name="Date">
-            <input class="input-manage" type="time" name="Time">
+          <select class="input-manage" name="Referee">
+            <option class="dropdown-content" value="NULL">Referee</option>
+            {% for referee in referees %}
+                <option class="dropdown-content" value="{{referee['first_name']}} {{referee['last_name']}}">{{referee['first_name']}} {{referee['last_name']}}</option>
+            {% endfor %}
+          </select>
+          <input class="input-manage" type="text" name="Location" placeholder= "Location"/>
+          <input class="input-manage" type="date" name="Date">
+          <input class="input-manage" type="text" name="Time" placeholder= "hh:mm (24 hr)"/>
         </div>
-        <div class="form-group row">
-          
-        </div>
-        <button class="btn-manage-submit" type="submit" href="/">Submit</button>
+        <button class="btn-manage-submit" type="submit">Submit</button>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <i class="p-manage">{{ message }}</i>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
       </form>
     </div>
   </body>

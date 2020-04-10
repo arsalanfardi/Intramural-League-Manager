@@ -55,18 +55,18 @@ main img
 }
   
 #table td, #table th {
-border: 1px solid #ddd;
-padding: 8px;
+    border: 1px solid #ddd;
+    padding: 8px;
 }
   
 #table tr:hover {background-color: #ddd;}
   
 #table th {
-padding-top: 12px;
-padding-bottom: 12px;
-text-align: center;
-background-color: #E25E5E;
-color: white;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: #E25E5E;
+    color: white;
 }
 
 /* Manage League page formatting */
@@ -75,10 +75,18 @@ color: white;
     min-height: 100%;
 }
 
-.body-manage, .div-manage, .form-manage, .input-manage, .select-manage, .p-manage { 
+.body-manage, .div-manage, .form-manage, .input-manage, .select-manage { 
     padding: 0;
     margin: 0;
     outline: none;
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 16px;
+    color: #eee;
+}
+
+.p-manage{
+    padding: -10;
+    margin: -10;
     font-family: Roboto, Arial, sans-serif;
     font-size: 16px;
     color: #eee;
@@ -187,7 +195,7 @@ color: white;
     width: 100%;
 }
 
-.btn-manage:hover {
+.btn-manage-submit:hover {
     background: #85d6de;
 }
 @media (min-width: 568px) {
