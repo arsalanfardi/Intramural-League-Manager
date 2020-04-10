@@ -5,15 +5,10 @@
 {% endblock %}
 
 {% block main %}
-<head>
-<style>
 
-</style>
-</head>
     <table id="table" class="table">
   <thead>
     <tr>
-      <th scope="col">Team ID</th>
       <th scope="col">Team Name</th>
       <th scope="col">Roster Size</th>
       <th scope="col">Captain</th>
@@ -21,9 +16,15 @@
     </tr>
   </thead>
   <tbody>
-
-
+    {%for result in db_result%}
+      <tr>
+        <td>{{result['team_name']}}</td>
+        <td>{{result['roster_size']}}</td>
+        <td>{{result['captain_first_name']}} {{result['captain_last_name']}}</td>
+        <td>TBD</td>
+      </tr>
+    {%endfor%}
   </tbody>
 </table>
 
-{% endblock %}
+{% endblock main %}

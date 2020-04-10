@@ -20,11 +20,15 @@ db = SQL("sqlite:///app/league.db")
 @app.route('/')
 @app.route('/index')
 def index():
-    test = db.execute(
-        "SELECT * FROM league"
+    result = db.execute(
+        "SELECT Team.team_name, Roster.roster_size, User.first_name AS captain_first_name, User.last_name AS captain_last_name\
+            FROM Team\
+            LEFT JOIN Roster\
+            ON Team.roster_id = Roster.roster_id\
+            LEFT JOIN User\
+            ON Roster.captain_id = User.user_id"
     )
-    print(test)
-    return render_template("index.html", var1=None, var2=None, var3=None)
+    return render_template("index.html", db_result=result)
 
 @app.route('/players', methods=['GET', 'POST'])
 def roster():
