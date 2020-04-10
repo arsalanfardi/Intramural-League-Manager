@@ -1,9 +1,30 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Manage
+    Manage League
 {% endblock %}
 
 {% block main %}
-
+<html class="html-manage">
+  <head>
+    <title>Player Registration form</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+  </head>
+  <body class="body-manage">
+    <div class="main-block">
+      <div class="left-part">
+        <i class="fas fa-basketball-ball fa-6x"></i>
+        <h1 class="h1-manage p-3">Manage League</h1>
+      </div>
+      <form class="form-manage">
+        <a href="/addPlayer" class="btn btn-secondary btn-lg btn-block" role="button">Add Player</a>
+        <a href="/addPlayer" class="btn btn-secondary btn-lg btn-block" role="button">Edit Player</a>
+        <a href="/addGame" class="btn btn-secondary btn-lg btn-block" role="button">Add Game</a>
+        <a href="/addPlayer" class="btn btn-secondary btn-lg btn-block" role="button">Edit Game</a>
+      </form>
+    </div>
+  </body>
+</html>
 {% endblock %}
+
