@@ -46,25 +46,156 @@ main img
     max-width: 100%;
 }
 
+/* Table formatting */
+
 #table {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 100%;
-  }
+}
   
-  #table td, #table th {
-    border: 1px solid #ddd;
-    padding: 8px;
-  }
+#table td, #table th {
+border: 1px solid #ddd;
+padding: 8px;
+}
   
-  /* #table tr{background-color: white;} */
+#table tr:hover {background-color: #ddd;}
   
-  #table tr:hover {background-color: #ddd;}
-  
-  #table th {
-    padding-top: 12px;
-    padding-bottom: 12px;
+#table th {
+padding-top: 12px;
+padding-bottom: 12px;
+text-align: center;
+background-color: #E25E5E;
+color: white;
+}
+
+/* Manage League page formatting */
+
+.html-manage, .body-manage {
+    min-height: 100%;
+}
+
+.body-manage, .div-manage, .form-manage, .input-manage, .select-manage, .p-manage { 
+    padding: 0;
+    margin: 0;
+    outline: none;
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 16px;
+    color: #eee;
+}
+
+.body-manage {
+    background-image: url(../templates/dinos.png) no-repeat center;
+    background-size: cover;
+}
+
+.h1-manage, .h2-manage {
+    text-transform: uppercase;
+    font-weight: 400;
+}
+
+.h2-manage {
+    margin: 0 0 0 8px;
+}
+
+.main-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 25px;
+    background: rgba(211, 114, 114, 5); 
+}
+
+.left-part, .form-manage {
+    padding: 25px;  
+}
+
+.left-part {
     text-align: center;
-    background-color: #E25E5E;
-    color: white;
-  }
+}
+.fa-graduation-cap {
+    font-size: 72px;
+}
+.form-manage {
+    background: rgba(0, 0, 0, 0.7); 
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-manage, .select-manage {
+    padding: 5px;
+    margin-bottom: 30px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #eee;
+}
+
+.input-manage::placeholder {
+    color: #eee;
+}
+
+.option-manage:focus {
+    border: none;
+}
+
+.option-mananage {
+    background: black; 
+    border: none;
+}
+
+.checkbox input {
+    margin: 0 10px 0 0;
+    vertical-align: middle;
+}
+
+.checkbox a {
+    color: #26a9e0;
+}
+
+.checkbox a:hover {
+    color: #85d6de;
+}
+
+.btn-manage {
+    padding: 10px 5px;
+    margin-top: 20px;
+    border-radius: 5px; 
+    border: none;
+    background: #26a9e0; 
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 400;
+    color: #fff;
+}
+
+.btn-manage {
+    width: 100%;
+}
+
+.btn-manage:hover {
+    background: #85d6de;
+}
+@media (min-width: 568px) {
+    html, body {
+        height: 100%;
+    }
+    .main-block {
+        flex-direction: row;
+        height: calc(100% - 50px);
+    }
+    .left-part, form {
+        flex: 1;
+        height: auto;
+    }  
+}
