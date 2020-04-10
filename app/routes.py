@@ -74,10 +74,13 @@ def schedule():
     #Below is executed for GET requests and 'View all', returns all games
     games = db.execute(games_query + order_query)
     return render_template("schedule.html", teams=team_names, games=games, selection=selected)
-    
+
+@app.route('/manage', methods =['GET', 'POST'])
+def manage():
+    return render_template('manage.html')
+
 @app.route('/addPlayer', methods =['GET', 'POST'])
 def addPlayer():
-
     if request.method == 'POST':
         playerDetails = request.form
         Roster_id = playerDetails['Roster_id']
@@ -86,16 +89,17 @@ def addPlayer():
         Birth_year = playerDetails['Birth_year']
         Email = playerDetails['Email']
         Phone_num = playerDetails['Phone_num']
-        
     return render_template('addPlayer.html')
     
     
+@app.route('/addGame', methods =['GET', 'POST'])
+def addGame():
+    team_names = get_teams()
+    if request.method == 'POST':
+        pass
+    print("teams", team_names)
+    return render_template('addGame.html', teams=team_names)
 
-@app.route('/manage', methods =['GET', 'POST'])
-def manage():
-
-        
-    return render_template('manage.html')
 
 def get_teams():
     team_names = db.execute(

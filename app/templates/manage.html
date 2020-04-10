@@ -1,143 +1,30 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Manage
+    Manage League
 {% endblock %}
 
 {% block main %}
-
-<!DOCTYPE html>
-<html>
+<html class="html-manage">
   <head>
-    <title>Manage League form </title>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet' type='text/css'>
+    <title>Player Registration form</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
-    <style>
-      html, body {
-      min-height: 100%;
-      }
-      body, div, form, input, p { 
-      padding: 0;
-      margin: 0;
-      outline: none;
-      font-family: Roboto, Arial, sans-serif;
-      font-size: 14px;
-      color: #666;
-      }
-      h1 {
-      margin: 0;
-      font-weight: 400;
-      }
-      h3 {
-      margin: 12px 0;
-      color: #E25E5E;
-      }
-      .main-block-white {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #fff;
-      }
-      form {
-      width: 100%;
-      padding: 40px;
-      }
-      fieldset {
-      border: none;
-      border-top: 1px solid #E25E5E;
-      }
-      .player-details{
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      }
-      .player-details >div >div {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-      }
-      .player-details >div, input, label {
-      width: 100%;
-      }
-      label {
-      padding: 0 50px;
-      text-align: right;
-      vertical-align: middle;
-      }
-      input {
-      padding: 5px;
-      vertical-align: middle;
-      }
-      .select input {
-      width: auto;
-      } 
-      .select label {
-      padding: 0 50px 0 0;
-	
-      } 
-      button {
-      width: 100%;
-      padding: 10px 0;
-      margin: 10px auto;
-      border-radius: 5px; 
-      border: none;
-      background: #E25E5E; 
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-      }
-      button:hover {
-      background: #E25E5E;
-      }
-      @media (min-width: 568px) {
-      .player-details >div {
-      width: 50%;
-      }
-      label {
-      width: 40%;
-      }
-      input {
-      width: 60%;
-      }
-      }
-    </style>
   </head>
-  <body>
+  <body class="body-manage">
     <div class="main-block">
-    <form action="/">
-      <h1>Manage League</h1>
-      <fieldset>
-        <legend>
-          <h3>Manage Player</h3>
-        </legend>
-        <div  class="player-details">
-              <div class="select">
-                <input type="radio" value="none" id="add-player" name="select" />
-                <label for="add-player" class="radio">Add Player</label>
-                <input type="radio" value="none" id="edit-player" name="select" />
-                <label for="edit-player" class="radio">Edit Player</label>
-              </div>
-            </div>
-      </fieldset>
-      <fieldset>
-        <legend>
-          <h3>Manage Game</h3>
-        </legend>
-        <div  class="player-details">
-          <div>
-            <div>
-              <div class="select">
-                <input type="radio" value="none" id="add-game" name="select" />
-                <label for="add-game" class="radio">Add Game</label>
-                <input type="radio" value="none" id="edit-game" name="select" >
-                <label for="edit-game" class="radio">Edit Game</label>
-              </div>
-            </div>
-      </fieldset>
-      <button type="submit" href="/">Next</button>
-    </form>
-    </div> 
+      <div class="left-part">
+        <i class="fas fa-basketball-ball fa-6x"></i>
+        <h1 class="h1-manage p-3">Manage League</h1>
+      </div>
+      <form class="form-manage">
+        <a href="/addPlayer" class="btn btn-secondary btn-lg btn-block" role="button">Add Player</a>
+        <a href="/addPlayer" class="btn btn-secondary btn-lg btn-block" role="button">Edit Player</a>
+        <a href="/addGame" class="btn btn-secondary btn-lg btn-block" role="button">Add Game</a>
+        <a href="/addPlayer" class="btn btn-secondary btn-lg btn-block" role="button">Edit Game</a>
+      </form>
+    </div>
   </body>
 </html>
-
 {% endblock %}
+

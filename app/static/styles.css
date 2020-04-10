@@ -145,6 +145,10 @@ color: white;
     color: #eee;
 }
 
+.dropdown-content{
+    color: rgb(0, 0, 0);
+}
+
 .option-manage:focus {
     border: none;
 }
@@ -167,7 +171,7 @@ color: white;
     color: #85d6de;
 }
 
-.btn-manage {
+.btn-manage-submit {
     padding: 10px 5px;
     margin-top: 20px;
     border-radius: 5px; 
@@ -179,7 +183,7 @@ color: white;
     color: #fff;
 }
 
-.btn-manage {
+.btn-manage-submit {
     width: 100%;
 }
 
@@ -198,4 +202,15 @@ color: white;
         flex: 1;
         height: auto;
     }  
+}
+
+/* Add  game */
+.text-add-game { 
+    text-align: left;
+    padding: 10px 0px;
+    margin: 0;
+    outline: none;
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 16px;
+    color: #eee;
 }
