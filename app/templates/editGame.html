@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block title %}
+   Edit Game
+{% endblock %}
+
+{% block main %}
+<html class="html-manage">
+  <head>
+    <title>Edit Game</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+  </head>
+  <body class="body-manage">
+    <div class="main-block">
+      <div class="left-part">
+        <i class="fas fa-basketball-ball fa-6x"></i>
+        <h1 class="h1-manage p-3">Edit Game</h1>
+      </div>
+      <form class="form-manage" method="post">
+        <div class="title">
+          <i class="fas fa-pencil-alt"></i> 
+          <h2>Select and Edit Game</h2>
+        </div>
+        <div class="info">
+            <select class="input-manage" style="margin-bottom: 0px" name="Game">
+                {% if selected_game %}
+                    <option class="dropdown-content" value="{{selected_game['game_id']}}">
+                        {{selected_game['game_id']}}. {{selected_game['home_team']}} vs. {{selected_game['away_team']}} ({{selected_game['date']}})</option>
+                {% else %}
+                <option class="dropdown-content" value="NULL">Choose Game</option>
+                {% endif %}
+                {% for game in games %}
+                    <option class="dropdown-content" value="{{game['game_id']}}">{{game['game_id']}}. {{game['home_team']}} vs. {{game['away_team']}} ({{game['date']}})</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="select_game" class="btn-manage-submit">Select Game</button>
+          <select class="input-manage" style="margin-top: 25px" name="Referee">
+            {% if curr_ref %}
+                <option class="dropdown-content" value="{{curr_ref}}">{{curr_ref}}</option>
+            {% else %}
+                <option class="dropdown-content" value="NULL">Referee</option>
+            {% endif %}
+            {% for referee in referees %}
+                {% if referee['first_name'] + " " + referee['last_name'] != curr_ref %}
+                <option class="dropdown-content" value="{{referee['first_name']}} {{referee['last_name']}}">{{referee['first_name']}} {{referee['last_name']}}</option>
+                {% endif %}
+            {% endfor %}
+          </select>
+          <input class="input-manage" type="text" name="Location" placeholder="Location" value="{{curr_location}}"/>
+          <input class="input-manage" type="date" name="Date" value="{{curr_date}}">
+          <input class="input-manage" type="text" name="Time" placeholder="hh:mm (24 hr)" value="{{curr_time}}"/>
+          <select class="input-manage" name="Win_team">
+            {% if curr_ref %}
+                <option class="dropdown-content" value="{{curr_win_team}}">Winning Team: {{curr_win_team}}</option>
+            {% else %}
+                <option class="dropdown-content" value="NULL">Winning Team</option>
+            {% endif %}
+            {% for team in teams %}
+                {% if team != curr_win_team %}
+                    <option class="dropdown-content" value="{{team}}">Winning Team: {{team}}</option>
+                {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+        <button class="btn-manage-submit" name="submit" type="submit" value="submit">Submit</button>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <i class="p-manage">{{ message }}</i>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </form>
+    </div>
+  </body>
+</html>
+{% endblock %}

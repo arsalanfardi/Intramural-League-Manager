@@ -102,20 +102,16 @@ def addGame():
     if request.method == 'POST':
         if not null_request(request.form):
             game_details = request.form
-            home_team = game_details['Home_team']
-            away_team = game_details['Away_team']
-            date = game_details['Date']
-            time = game_details['Time']
             ref_first_name, ref_last_name = game_details['Referee'].split()
-            location = game_details['Location']
-            if home_team != away_team:
+            if game_details['Home_team'] != game_details['Away_team']:
                 db.execute(
                     "INSERT INTO Game (schedule_id, date, time, location, home_id, away_id, ref_id) \
                         VALUES (1, ?, ?, ?, \
                         (SELECT Team.team_id FROM Team WHERE Team.team_name=?),\
                         (SELECT Team.team_id FROM Team WHERE Team.team_name=?),\
-                        (SELECT User.user_id FROM User WHERE User.first_name=? AND User.last_name=?))",
-                        date, time, location, home_team, away_team, ref_first_name, ref_last_name
+                        (SELECT User.user_id FROM Referee LEFT JOIN User WHERE User.first_name=? AND User.last_name=?))",
+                        game_details['Date'], game_details['Time'], game_details['Location'], 
+                        game_details['Home_team'], game_details['Away_team'], ref_first_name, ref_last_name
                 )
                 flash("Successful submission!")
             else:
@@ -124,6 +120,40 @@ def addGame():
             flash("Please enter all fields")
     return render_template('addGame.html', teams=team_names, referees=referees)
 
+@app.route('/editGame', methods=['GET', 'POST'])
+def edit_game():
+    games = get_games()
+    if request.method == 'POST':
+        # Selecting a game to edit
+        if 'select_game' in request.form:
+            game_id = request.form['Game']
+            game_details = get_game(game_id)
+            # Selected game to display by default in drop down menu
+            selected_game = {'game_id': game_id, 'home_team': game_details['home_team'], 'away_team': game_details['away_team'], 'date': game_details['date']}
+            curr_ref = game_details['ref_first_name'] + " " + game_details['ref_last_name']
+            teams = [game_details['home_team'], game_details['away_team']]
+            return render_template('editGame.html', games=games, selected_game=selected_game, curr_ref=curr_ref, curr_location=game_details['location'], 
+                referees=get_referees(), curr_date=game_details['date'], curr_time=game_details['time'], curr_win_team=game_details['win_team'], teams=teams)
+        # Submitting updates
+        elif 'submit' in request.form:
+            print(request.form)
+            if not null_request(request.form):
+                game_id = request.form['Game']
+                updates = request.form
+                ref_first_name, ref_last_name = updates['Referee'].split()
+                db.execute(
+                    "UPDATE Game\
+                    SET winner_id = (SELECT Team.team_id FROM Team WHERE Team.team_name=?),\
+                    location=?, date=?, time=?,\
+                    ref_id = (SELECT User.user_id FROM Referee LEFT JOIN User WHERE User.first_name=? AND User.last_name=?)\
+                    WHERE Game.game_id=?",
+                    updates['Win_team'], updates['Location'], updates['Date'], updates['Time'], 
+                    ref_first_name, ref_last_name, game_id
+                )
+                flash("Successful submission!")
+            else:
+                flash("Please enter all fields")
+    return render_template('editGame.html', games=games, selected_game=None)
 
 def get_teams():
     team_names = db.execute(
@@ -141,10 +171,32 @@ def get_referees():
     )
     return referees
 
+def get_games():
+    games = db.execute(
+        "SELECT Game.game_id, Game.date, HomeTeam.team_name as home_team, AwayTeam.team_name as away_team\
+        FROM Game\
+        LEFT JOIN Team as HomeTeam ON Game.home_id = HomeTeam.team_id\
+        LEFT JOIN Team as AwayTeam on Game.away_id = AwayTeam.team_id\
+        ORDER BY Game.game_id"
+    )
+    return games
+
+def get_game(game_id):
+    game = db.execute(
+        "SELECT Game.date, Game.time, Game.location, HomeTeam.team_name as home_team, AwayTeam.team_name as away_team,\
+        User.first_name as ref_first_name, User.last_name as ref_last_name, WinTeam.team_name as win_team\
+        FROM Game\
+        LEFT JOIN Team as HomeTeam ON Game.home_id = HomeTeam.team_id\
+        LEFT JOIN Team as AwayTeam on Game.away_id = AwayTeam.team_id\
+        LEFT JOIN Team as WinTeam on Game.winner_id = WinTeam.team_id\
+        LEFT JOIN User on User.user_id = Game.ref_id\
+        WHERE Game.game_id=?",
+        game_id
+    )
+    return game[0] # query returns a one element list
+
 def null_request(request_form):
     for k, v in request_form.items():
-        if len(request_form[k]) == 0:
-            print("Null found")
+        if len(request_form[k]) == 0 or request_form[k] == 'NULL':
             return True
-    print("no nulls")
     return False
