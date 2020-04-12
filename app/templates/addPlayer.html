@@ -1,155 +1,39 @@
-<!DOCTYPE html>
 {% extends "layout.html" %}
 
 {% block title %}
-    Player
+    Add Player
 {% endblock %}
 
 {% block main %}
-<html>
+<html class="html-manage">
   <head>
     <title>Player Registration form</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
-    <style>
-      html, body {
-      min-height: 100%;
-      }
-      body, div, form, input, select, p { 
-      padding: 0;
-      margin: 0;
-      outline: none;
-      font-family: Roboto, Arial, sans-serif;
-      font-size: 16px;
-      color: #eee;
-      }
-      body {
-      background-image: url(../templates/dinos.png) no-repeat center;
-      background-size: cover;
-      }
-      h1, h2 {
-      text-transform: uppercase;
-      font-weight: 400;
-      }
-      h2 {
-      margin: 0 0 0 8px;
-      }
-      .main-block {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-      padding: 25px;
-      background: rgba(211, 114, 114, 5); 
-      }
-      .left-part, form {
-      padding: 25px;
-      }
-      .left-part {
-      text-align: center;
-      }
-      .fa-graduation-cap {
-      font-size: 72px;
-      }
-      form {
-      background: rgba(0, 0, 0, 0.7); 
-      }
-      .title {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-      }
-      .info {
-      display: flex;
-      flex-direction: column;
-      }
-      input, select {
-      padding: 5px;
-      margin-bottom: 30px;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid #eee;
-      }
-      input::placeholder {
-      color: #eee;
-      }
-      option:focus {
-      border: none;
-      }
-      option {
-      background: black; 
-      border: none;
-      }
-      .checkbox input {
-      margin: 0 10px 0 0;
-      vertical-align: middle;
-      }
-      .checkbox a {
-      color: #26a9e0;
-      }
-      .checkbox a:hover {
-      color: #85d6de;
-      }
-      .btn-item, button {
-      padding: 10px 5px;
-      margin-top: 20px;
-      border-radius: 5px; 
-      border: none;
-      background: #26a9e0; 
-      text-decoration: none;
-      font-size: 15px;
-      font-weight: 400;
-      color: #fff;
-      }
-      .btn-item {
-      display: inline-block;
-      margin: 20px 5px 0;
-      }
-      button {
-      width: 100%;
-      }
-      button:hover, .btn-item:hover {
-      background: #85d6de;
-      }
-      @media (min-width: 568px) {
-      html, body {
-      height: 100%;
-      }
-      .main-block {
-      flex-direction: row;
-      height: calc(100% - 50px);
-      }
-      .left-part, form {
-      flex: 1;
-      height: auto;
-      }
-      }
-    </style>
   </head>
-  <body>
+  <body class="body-manage">
     <div class="main-block">
       <div class="left-part">
-        <i class="fas fa-graduation-cap"></i>
-        <h1>Register for new players</h1>
+        <i class="fas fa-basketball-ball fa-6x"></i>
+        <h1 class="h1-manage p-3">Register New Player</h1>
       </div>
-      <form method= "POST" action="/">
+      <form class="form-manage" method= "POST" action="/">
         <div class="title">
           <i class="fas fa-pencil-alt"></i> 
-          <h2>Register here</h2>
+          <h2>Enter details below</h2>
         </div>
         <div class="info">
-		  <input type="number" name="Roster_id" placeholder= "Roster ID"/>
-		  <input type="text" name="First_name" placeholder= "First Name"/>
-		  <input type="text" name="Last_name" placeholder= "Last Name"/>
-		  <input type="number" name="Birth_year" placeholder= "Birth Year" />
-		  <input type="email" name="Email" placeholder= "Email" />
-		  <input type="number" name="Phone_num" placeholder= "Phone Number"/>
+          <input class="input-manage" type="number" name="Roster_id" placeholder= "Roster ID"/>
+          <input class="input-manage" type="text" name="First_name" placeholder= "First Name"/>
+          <input class="input-manage" type="text" name="Last_name" placeholder= "Last Name"/>
+          <input class="input-manage" type="number" name="Birth_year" placeholder= "Birth Year" />
+          <input class="input-manage" type="email" name="Email" placeholder= "Email" />
+          <input class="input-manage" type="number" name="Phone_num" placeholder= "Phone Number"/>
         </div>
         <div class="checkbox">
           <input type="checkbox" name="checkbox"><span>I agree to the <a>Privacy Policy for UofC Intramurals</a></span>
         </div>
-        <button type="submit" href="/">Submit</button>
+        <button class="btn-manage-submit" type="submit" href="/">Submit</button>
       </form>
     </div>
   </body>

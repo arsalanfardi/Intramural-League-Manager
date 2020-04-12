@@ -6,30 +6,50 @@
 
 {% block main %}
 
-    <table class="table">
+<div class="p-3 text-left">
+  <form name="Team" method="post" action="#">
+    <select name="Team">
+      {% if selection=='' %}
+        <option value="NULL"> Select Team</option>
+      {% else %}
+        <option value="{{selection}}">{{selection}}</option>
+        <option value="View all">View all</option>
+      {% endif %}
+      {% for team in teams %}
+        {% if team['team_name']!=selection %}
+          <option value="{{team['team_name']}}">{{team['team_name']}}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-secondary btn-sm">Submit</button>
+  </form>
+</div>
+
+<table id="table" class="table">
   <thead>
     <tr>
-      <th scope="col">Placeholder</th>
-      <th scope="col">Placeholder</th>
-      <th scope="col">Placeholder</th>
-      <th scope="col">Placeholder</th>
-      <th scope="col">Placeholder</th>
-      <th scope="col">Placeholder</th>
+      <th scope="col">Date</th>
+      <th scope="col">Time</th>
+      <th scope="col">Location</th>
+      <th scope="col">Home Team</th>
+      <th scope="col">Away Team</th>
+      <th scope="col">Final Score</th>
+      <th scope="col">Winning Team</th>
     </tr>
   </thead>
-  <!-- <tbody>
-      {% for entry in output %}
-    <tr>
-      <th scope="row">{{ entry[''] }}</th>
-      <td>{{ entry[''] }}</td>
-      <td>${{ entry[''] }}</td>
-      <td>${{ entry[''] }}</td>
-      <td>{{ entry[''] }}</td>
-      <td>{{ entry[''] }}</td>
-    </tr>
-      {% endfor %}
-
-  </tbody> -->
+  <tbody>
+    {%for game in games%}
+      <tr>
+        <td>{{game['date']}}</td>
+        <td>{{game['time']}}</td>
+        <td>{{game['location']}}</td>
+        <td>{{game['home_team']}}</td>
+        <td>{{game['away_team']}}</td>
+        <td>TBD</td>
+        <td>{{game['win_team']}}</td>
+      </tr>
+    {%endfor%}
+  </tbody>
 </table>
 
 {% endblock %}
