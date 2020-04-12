@@ -83,7 +83,7 @@ def manage():
     return render_template('manage.html')
 
 @app.route('/addPlayer', methods =['GET', 'POST'])
-def addPlayer():
+def add_player():
     if request.method == 'POST':
         if not null_request(request.form):
             playerDetails = request.form
@@ -101,9 +101,32 @@ def addPlayer():
             flash("Please enter all fields")
     return render_template('addPlayer.html')
     
-    
+@app.route('/editPlayer', methods =['GET', 'POST'])
+def editPlayer():
+    if request.method == 'POST':
+        user_id = ''
+        if 'search_player' in request.form:
+            user_id = request.form['search']
+            player = []
+            players = db.execute(
+            "SELECT Player.roster_id, User.first_name, User.last_name, Player.birth_year, User.email, User.phone\
+            FROM Player\
+            LEFT JOIN User ON Player.user_id = User.user_id\
+            WHERE Player.user_id =?", user_id
+            )
+            # populate the fields after ^ query
+            return render_template('editPlayer.html')
+        elif 'submit' in request.form:
+            if not null_request(request.form):
+                db.execute("UPDATE Player SET birth_year = ? WHERE user_id = ?" , request.form['Birth_year'], user_id)
+                db.execute( "UPDATE User SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE user_id = ?", request.form['First_name'], request.form['Last_name'], request.form['email'], request.form['Phone_num'], user_id)
+                flash("Successful submission!")
+            else:
+                flash("Please enter all fields")
+    return render_template('editPlayer.html')
+
 @app.route('/addGame', methods =['GET', 'POST'])
-def addGame():
+def add_game():
     team_names = get_teams()
     referees = get_referees()
     if request.method == 'POST':
