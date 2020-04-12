@@ -85,13 +85,20 @@ def manage():
 @app.route('/addPlayer', methods =['GET', 'POST'])
 def addPlayer():
     if request.method == 'POST':
-        playerDetails = request.form
-        Roster_id = playerDetails['Roster_id']
-        First_name = playerDetails['First_name']
-        Last_name = playerDetails['Last_name']
-        Birth_year = playerDetails['Birth_year']
-        Email = playerDetails['Email']
-        Phone_num = playerDetails['Phone_num']
+        if not null_request(request.form):
+            playerDetails = request.form
+            Roster_id = playerDetails['Roster_id']
+            First_name = playerDetails['First_name']
+            Last_name = playerDetails['Last_name']
+            Birth_year = playerDetails['Birth_year']
+            Email = playerDetails['Email']
+            Phone_num = playerDetails['Phone_num']
+            db.execute("INSERT INTO User(first_name, last_name, email, phone) VALUES(?, ?, ?, ?)", First_name, Last_name, Email, Phone_num)
+            user_id = db.execute("SELECT max(user_id) FROM User")[0]['max(user_id)']
+            db.execute("INSERT INTO Player(user_id, birth_year, roster_id) VALUES (?, ?, ?)", user_id, Birth_year, Roster_id)
+            flash("Successful submission!")
+        else:
+            flash("Please enter all fields")
     return render_template('addPlayer.html')
     
     

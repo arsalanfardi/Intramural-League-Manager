@@ -17,7 +17,7 @@
         <i class="fas fa-basketball-ball fa-6x"></i>
         <h1 class="h1-manage p-3">Register New Player</h1>
       </div>
-      <form class="form-manage" method= "POST" action="/">
+      <form class="form-manage" method="post">
         <div class="title">
           <i class="fas fa-pencil-alt"></i> 
           <h2>Enter details below</h2>
@@ -33,7 +33,14 @@
         <div class="checkbox">
           <input type="checkbox" name="checkbox"><span>I agree to the <a>Privacy Policy for UofC Intramurals</a></span>
         </div>
-        <button class="btn-manage-submit" type="submit" href="/">Submit</button>
+        <button class="btn-manage-submit" type="submit">Submit</button>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <i class="p-manage">{{ message }}</i>
+          {% endfor %}
+        {% endif %}
+        {% endwith %}
       </form>
     </div>
   </body>
