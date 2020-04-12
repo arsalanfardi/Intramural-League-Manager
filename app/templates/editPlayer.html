@@ -23,15 +23,39 @@
           <h2>Select and Edit Player</h2>
         </div>
         <div class="info">
-		  <input class="input-manage" style="margin-bottom: 0px" type="text" placeholder="Player's UserID..." name="search">
-		  <button class="btn-manage-submit"  type="submit" name="search_player"><i class="fa fa-search"></i> Search Player</button>
-		  <input class="input-manage" style="margin-top: 25px" name="Roster_id" placeholder= "Roster ID" readonly/>
-		  <input class="input-manage" type="text" name="First_name" placeholder= "First Name"/>
-		  <input class="input-manage" type="text" name="Last_name" placeholder= "Last Name"/>
-		  <input class="input-manage" type="number" name="Birth_year" placeholder= "Birth Year"/>
-		  <input class="input-manage" type="email" name="Email" placeholder= "Email"/>
-		  <input class="input-manage" type="number" name="Phone_num" placeholder= "Phone Number"/>
-        <button class="btn-manage-submit" type="submit" name ="submit">Update Player's Information</button>
+		  <!-- <input class="input-manage" style="margin-bottom: 0px" type="text" placeholder="Player's UserID..." name="search">
+      <button class="btn-manage-submit"  type="submit" name="search_player"><i class="fa fa-search"></i> Search Player</button> -->
+      <select class="input-manage" style="margin-bottom: 0px" name="Player">
+        {% if selected_player %}
+            <option class="dropdown-content" value="{{selected_player['user_id']}}">
+                {{selected_player['first_name']}} {{selected_player['last_name']}}</option>
+        {% else %}
+        <option class="dropdown-content" value="NULL">Choose Player</option>
+        {% endif %}
+        {% for player in players %}
+            <option class="dropdown-content" value="{{player['user_id']}}">{{player['first_name']}} {{player['last_name']}}</option>
+        {% endfor %}
+    </select>
+    <!-- Button to select game and display game information on the page -->
+    <button type="submit" name="select_player" class="btn-manage-submit">Select Player</button>
+      {% if selected_player %}
+          <input type="hidden" class="input-manage" style="margin-top: 25px" name="User_id" value="{{selected_player['user_id']}}" readonly/>
+          <input class="input-manage" style="margin-top: 25px" name="Roster_id" value= "{{selected_player['roster_id']}}" readonly/>
+          <input class="input-manage" type="text" name="First_name" value= "{{selected_player['first_name']}}"/>
+          <input class="input-manage" type="text" name="Last_name" value= "{{selected_player['last_name']}}"/>
+          <input class="input-manage" type="number" name="Birth_year" value= "{{selected_player['birth_year']}}"/>
+          <input class="input-manage" type="email" name="Email" value= "{{selected_player['email']}}"/>
+          <input class="input-manage" type="text" name="Phone_num" value= "{{selected_player['phone']}}"/>
+      {% else %}
+        <input class="input-manage" style="margin-top: 25px" name="Roster_id" placeholder= "Roster ID" readonly/>
+        <input class="input-manage" type="text" name="First_name" placeholder= "First Name"/>
+        <input class="input-manage" type="text" name="Last_name" placeholder= "Last Name"/>
+        <input class="input-manage" type="number" name="Birth_year" placeholder= "Birth Year"/>
+        <input class="input-manage" type="email" name="Email" placeholder= "Email"/>
+        <input class="input-manage" type="text" name="Phone_num" placeholder= "Phone Number"/>
+      {% endif %}
+      <button class="btn-manage-submit" type="submit" name ="submit" value="val">Update Player's Information</button>
+      <button class="btn-manage-submit" type="submit" name ="delete" value="val">Delete Player</button>
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for message in messages %}

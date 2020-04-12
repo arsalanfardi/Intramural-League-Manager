@@ -27,12 +27,12 @@
             <select class="input-manage" style="margin-bottom: 0px" name="Game">
                 {% if selected_game %}
                     <option class="dropdown-content" value="{{selected_game['game_id']}}">
-                        {{selected_game['game_id']}}. {{selected_game['home_team']}} vs. {{selected_game['away_team']}} ({{selected_game['date']}})</option>
+                        {{selected_game['home_team']}} vs. {{selected_game['away_team']}} ({{selected_game['date']}})</option>
                 {% else %}
                 <option class="dropdown-content" value="NULL">Choose Game</option>
                 {% endif %}
                 {% for game in games %}
-                    <option class="dropdown-content" value="{{game['game_id']}}">{{game['game_id']}}. {{game['home_team']}} vs. {{game['away_team']}} ({{game['date']}})</option>
+                    <option class="dropdown-content" value="{{game['game_id']}}">{{game['home_team']}} vs. {{game['away_team']}} ({{game['date']}})</option>
                 {% endfor %}
             </select>
             <!-- Button to select game and display game information on the page -->
@@ -65,9 +65,11 @@
                 {% endif %}
             {% endfor %}
           </select>
+          <input class="input-manage" type="text" name="Score" value="{{score}}"/>
         </div>
         <!-- Button to submit game updates -->
         <button class="btn-manage-submit" name="submit" type="submit" value="submit">Submit</button>
+        <button class="btn-manage-submit" name="delete" type="submit" value="delete">Delete Game</button>
         <!-- Flash messages to inform user of request status -->
         {% with messages = get_flashed_messages() %}
           {% if messages %}

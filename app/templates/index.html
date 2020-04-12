@@ -12,7 +12,7 @@
       <th scope="col">Team Name</th>
       <th scope="col">Roster Size</th>
       <th scope="col">Captain</th>
-      <th scope="col"><b>Record</b></th>
+      <th scope="col"><b>Record (W-L)</b></th>
     </tr>
   </thead>
   <tbody>
@@ -21,7 +21,7 @@
         <td>{{result['team_name']}}</td>
         <td>{{result['roster_size']}}</td>
         <td>{{result['captain_first_name']}} {{result['captain_last_name']}}</td>
-        <td>TBD</td>
+        <td>{{result['record']}}</td>
       </tr>
     {%endfor%}
   </tbody>

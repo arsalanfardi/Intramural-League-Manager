@@ -2,6 +2,7 @@ from flask import Flask, flash, jsonify, redirect, render_template, request, ses
 from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
 from app import app
+import datetime
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -39,8 +40,21 @@ def index():
             LEFT JOIN Roster\
             ON Team.roster_id = Roster.roster_id\
             LEFT JOIN User\
-            ON Roster.captain_id = User.user_id"
+            ON Roster.captain_id = User.user_id\
+            ORDER BY Roster.roster_id"
     )
+
+    wins = db.execute(
+        "SELECT roster_id, COUNT(*) As wins FROM Game, Roster \
+        WHERE roster_id = winner_id GROUP BY roster_id"
+    )
+    losses = db.execute(
+        "SELECT roster_id, COUNT(*) As losses FROM Game, Roster \
+        WHERE roster_id = loser_id GROUP BY roster_id"
+    )
+    for i in range(len(result)):
+        result[i]['record'] = str(wins[i]['wins']) + "-" + str(losses[i]['losses'])
+
     return render_template("index.html", db_result=result)
 
 @app.route('/players', methods=['GET', 'POST'])
@@ -69,7 +83,8 @@ def roster():
 def schedule():
     selected=''
     team_names = get_teams()
-    games_query = "SELECT Game.date, Game.time, Game.location, HomeTeam.team_name as home_team, AwayTeam.team_name as away_team, WinTeam.team_name as win_team\
+    games_query = "SELECT Game.date, Game.time, Game.location, HomeTeam.team_name as home_team, \
+                AwayTeam.team_name as away_team, WinTeam.team_name as win_team, Game.score\
                 FROM Game\
                 LEFT JOIN Team as HomeTeam ON Game.home_id = HomeTeam.team_id\
                 LEFT JOIN Team as AwayTeam on Game.away_id = AwayTeam.team_id\
@@ -94,10 +109,12 @@ def manage():
 
 @app.route('/addPlayer', methods =['GET', 'POST'])
 def add_player():
+    team_names = get_teams()
     if request.method == 'POST':
+        print(request.form)
         if not null_request(request.form):
             playerDetails = request.form
-            Roster_id = playerDetails['Roster_id']
+            Roster_id = playerDetails['Team']
             First_name = playerDetails['First_name']
             Last_name = playerDetails['Last_name']
             Birth_year = playerDetails['Birth_year']
@@ -106,34 +123,48 @@ def add_player():
             db.execute("INSERT INTO User(first_name, last_name, email, phone) VALUES(?, ?, ?, ?)", First_name, Last_name, Email, Phone_num)
             user_id = db.execute("SELECT max(user_id) FROM User")[0]['max(user_id)']
             db.execute("INSERT INTO Player(user_id, birth_year, roster_id) VALUES (?, ?, ?)", user_id, Birth_year, Roster_id)
+            new_size = db.execute("SELECT roster_id, COUNT(*) As size FROM Player WHERE roster_id = ?", Roster_id)
+            db.execute("UPDATE Roster SET roster_size = ? WHERE roster_id = ?", new_size[0]['size'], Roster_id)
             flash("Successful submission!")
         else:
             flash("Please enter all fields")
-    return render_template('addPlayer.html')
+    return render_template('addPlayer.html', teams=team_names)
 
 @app.route('/editPlayer', methods =['GET', 'POST'])
 def editPlayer():
+    players = get_players()
     if request.method == 'POST':
-        user_id = ''
-        if 'search_player' in request.form:
-            user_id = request.form['search']
-            player = []
-            players = db.execute(
-            "SELECT Player.roster_id, User.first_name, User.last_name, Player.birth_year, User.email, User.phone\
-            FROM Player\
-            LEFT JOIN User ON Player.user_id = User.user_id\
-            WHERE Player.user_id =?", user_id
-            )
-            # populate the fields after ^ query
-            return render_template('editPlayer.html')
+        if 'select_player' in request.form:
+            player_id = request.form['Player']
+            player_details = get_player(player_id)
+            # Selected player to persist in drop down menu during the next render
+            # Populate the page with data from the selected game, denoted by variables beginning with curr
+            return render_template('editPlayer.html', players=players, selected_player=player_details[0])
         elif 'submit' in request.form:
             if not null_request(request.form):
-                db.execute("UPDATE Player SET birth_year = ? WHERE user_id = ?" , request.form['Birth_year'], user_id)
-                db.execute( "UPDATE User SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE user_id = ?", request.form['First_name'], request.form['Last_name'], request.form['email'], request.form['Phone_num'], user_id)
+                updated = request.form
+                db.execute("UPDATE Player SET birth_year = ? WHERE user_id = ?", updated['Birth_year'], updated['User_id'])
+                db.execute( "UPDATE User SET first_name = ?, last_name = ?, email = ?, phone = ? \
+                             WHERE user_id = ?", updated['First_name'], updated['Last_name'], \
+                                                 updated['Email'], updated['Phone_num'], updated['User_id'])
                 flash("Successful submission!")
             else:
                 flash("Please enter all fields")
-    return render_template('editPlayer.html')
+        elif 'delete' in request.form:
+            if not null_request(request.form):
+            # Delete player and update roster size
+                db.execute(
+                    "DELETE FROM User WHERE user_id=?", request.form['User_id']
+                )
+                db.execute(
+                    "DELETE FROM Player WHERE user_id=?", request.form['User_id']
+                )
+                new_size = db.execute("SELECT roster_id, COUNT(*) As size FROM Player WHERE roster_id = ?", request.form['Roster_id'])
+                db.execute("UPDATE Roster SET roster_size = ? WHERE roster_id = ?", new_size[0]['size'], request.form['Roster_id'])
+                flash("Deleted Player!")
+            else:
+                flash("No Player Selected")
+    return render_template('editPlayer.html', players=players)
 
 @app.route('/addGame', methods =['GET', 'POST'])
 def add_game():
@@ -175,36 +206,87 @@ def edit_game():
             teams = [game_details['home_team'], game_details['away_team']]
             # Populate the page with data from the selected game, denoted by variables beginning with curr
             return render_template('editGame.html', games=games, selected_game=selected_game, curr_ref=curr_ref, curr_location=game_details['location'],
-                referees=get_referees(), curr_date=game_details['date'], curr_time=game_details['time'], curr_win_team=game_details['win_team'], teams=teams)
+                referees=get_referees(), curr_date=game_details['date'], curr_time=game_details['time'], curr_win_team=game_details['win_team'], teams=teams, score=game_details['score'])
         # Submitting updates
         elif 'submit' in request.form:
-            print(request.form)
             if not null_request(request.form):
                 game_id = request.form['Game']
                 updates = request.form
+                game_details = get_game(game_id)
+                selected_game = {'home_team': game_details['home_team'], 'away_team': game_details['away_team']}
+                if selected_game['home_team'] == updates['Win_team']:
+                    loser = selected_game['away_team']
+                else:
+                    loser = selected_game['home_team']
                 ref_first_name, ref_last_name = updates['Referee'].split()
                 db.execute(
                     "UPDATE Game\
                     SET winner_id = (SELECT Team.team_id FROM Team WHERE Team.team_name=?),\
-                    location=?, date=?, time=?,\
+                    loser_id = (SELECT Team.team_id FROM Team WHERE Team.team_name=?),\
+                    location=?, date=?, time=?, score=?, \
                     ref_id = (SELECT User.user_id FROM Referee LEFT JOIN User WHERE User.first_name=? AND User.last_name=?)\
                     WHERE Game.game_id=?",
-                    updates['Win_team'], updates['Location'], updates['Date'], updates['Time'],
+                    updates['Win_team'], loser, updates['Location'], updates['Date'], updates['Time'], updates['Score'],
                     ref_first_name, ref_last_name, game_id
                 )
                 flash("Successful submission!")
             else:
                 flash("Please enter all fields")
+        elif 'delete' in request.form:
+            if not null_request(request.form):
+            # Delete player and update roster size
+                db.execute(
+                    "DELETE FROM Game WHERE game_id=?", request.form['Game']
+                )
+                flash("Game deleted!")
+                return render_template('editGame.html', games=games, selected_game=None)
+            else:
+                flash("No Game Selected")
+            
     # Default render with no selected game (fields on page will be blank)
     return render_template('editGame.html', games=games, selected_game=None)
 
+@app.route('/newAnnouncement', methods=['GET', 'POST'])
+def add_announcement():
+    if request.method == 'POST':
+        if not null_request(request.form):
+            announcement = request.form
+            # Get today's date in proper format
+            today = datetime.date.today()
+            today_str = today.strftime("%B %d, %Y")
+            db.execute("INSERT INTO Announcements(title, date, message) VALUES(?, ?, ?)", \
+                        announcement['Title'], today_str, announcement['Body'])
+            flash("Successful submission!")
+        else:
+            flash("Please enter all fields")
+    # Default render 
+    return render_template('newAnnouncement.html')
+
 def get_teams():
     team_names = db.execute(
-        "SELECT Team.team_name\
+        "SELECT Team.team_name, Team.roster_id\
             FROM Team\
                 ORDER BY Team.team_name"
     )
     return team_names
+
+def get_players():
+    players = db.execute(
+          "SELECT User.first_name, User.last_name, Player.user_id \
+            FROM Player\
+            LEFT JOIN User on User.user_id = Player.user_id"
+    )
+    return players
+
+def get_player(pid):
+    player = db.execute(
+        "SELECT Player.user_id, Player.roster_id, User.first_name, User.last_name, \
+            Player.birth_year, User.email, User.phone\
+            FROM Player\
+            LEFT JOIN User ON Player.user_id = User.user_id\
+			WHERE Player.user_id = ?", pid
+    )
+    return player
 
 def get_referees():
     referees = db.execute(
@@ -227,7 +309,7 @@ def get_games():
 def get_game(game_id):
     game = db.execute(
         "SELECT Game.date, Game.time, Game.location, HomeTeam.team_name as home_team, AwayTeam.team_name as away_team,\
-        User.first_name as ref_first_name, User.last_name as ref_last_name, WinTeam.team_name as win_team\
+        User.first_name as ref_first_name, User.last_name as ref_last_name, WinTeam.team_name as win_team, Game.score as score \
         FROM Game\
         LEFT JOIN Team as HomeTeam ON Game.home_id = HomeTeam.team_id\
         LEFT JOIN Team as AwayTeam on Game.away_id = AwayTeam.team_id\

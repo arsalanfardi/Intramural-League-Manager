@@ -23,12 +23,18 @@
           <h2>Enter details below</h2>
         </div>
         <div class="info">
-          <input class="input-manage" type="number" name="Roster_id" placeholder= "Roster ID"/>
+          <!-- <input class="input-manage" type="number" name="Roster_id" placeholder= "Roster ID"/> -->
+          <select class="input-manage" name="Team">
+            <option class="dropdown-content" value="NULL">Team</option>
+            {% for team in teams %}
+                <option class="dropdown-content" value="{{team['roster_id']}}">{{team['team_name']}}</option>
+            {% endfor %}
+          </select>
           <input class="input-manage" type="text" name="First_name" placeholder= "First Name"/>
           <input class="input-manage" type="text" name="Last_name" placeholder= "Last Name"/>
           <input class="input-manage" type="number" name="Birth_year" placeholder= "Birth Year" />
           <input class="input-manage" type="email" name="Email" placeholder= "Email" />
-          <input class="input-manage" type="number" name="Phone_num" placeholder= "Phone Number"/>
+          <input class="input-manage" type="text" name="Phone_num" placeholder= "Phone Number"/>
         </div>
         <div class="checkbox">
           <input type="checkbox" name="checkbox"><span>I agree to the <a>Privacy Policy for UofC Intramurals</a></span>
