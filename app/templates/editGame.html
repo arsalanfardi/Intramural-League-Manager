@@ -23,6 +23,7 @@
           <h2>Select and Edit Game</h2>
         </div>
         <div class="info">
+            <!-- Dropdown menu to select game, persists if a game was already selected -->
             <select class="input-manage" style="margin-bottom: 0px" name="Game">
                 {% if selected_game %}
                     <option class="dropdown-content" value="{{selected_game['game_id']}}">
@@ -34,6 +35,7 @@
                     <option class="dropdown-content" value="{{game['game_id']}}">{{game['game_id']}}. {{game['home_team']}} vs. {{game['away_team']}} ({{game['date']}})</option>
                 {% endfor %}
             </select>
+            <!-- Button to select game and display game information on the page -->
             <button type="submit" name="select_game" class="btn-manage-submit">Select Game</button>
           <select class="input-manage" style="margin-top: 25px" name="Referee">
             {% if curr_ref %}
@@ -43,13 +45,14 @@
             {% endif %}
             {% for referee in referees %}
                 {% if referee['first_name'] + " " + referee['last_name'] != curr_ref %}
-                <option class="dropdown-content" value="{{referee['first_name']}} {{referee['last_name']}}">{{referee['first_name']}} {{referee['last_name']}}</option>
+                  <option class="dropdown-content" value="{{referee['first_name']}} {{referee['last_name']}}">{{referee['first_name']}} {{referee['last_name']}}</option>
                 {% endif %}
             {% endfor %}
           </select>
           <input class="input-manage" type="text" name="Location" placeholder="Location" value="{{curr_location}}"/>
           <input class="input-manage" type="date" name="Date" value="{{curr_date}}">
           <input class="input-manage" type="text" name="Time" placeholder="hh:mm (24 hr)" value="{{curr_time}}"/>
+          <!-- Dropdown menu to select winner from a list of the two teams -->
           <select class="input-manage" name="Win_team">
             {% if curr_ref %}
                 <option class="dropdown-content" value="{{curr_win_team}}">Winning Team: {{curr_win_team}}</option>
@@ -63,7 +66,9 @@
             {% endfor %}
           </select>
         </div>
+        <!-- Button to submit game updates -->
         <button class="btn-manage-submit" name="submit" type="submit" value="submit">Submit</button>
+        <!-- Flash messages to inform user of request status -->
         {% with messages = get_flashed_messages() %}
           {% if messages %}
             {% for message in messages %}

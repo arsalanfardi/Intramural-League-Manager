@@ -133,6 +133,7 @@ def add_game():
         if not null_request(request.form):
             game_details = request.form
             ref_first_name, ref_last_name = game_details['Referee'].split()
+            # Ensure the same team has not been inputted twice
             if game_details['Home_team'] != game_details['Away_team']:
                 db.execute(
                     "INSERT INTO Game (schedule_id, date, time, location, home_id, away_id, ref_id) \
@@ -158,10 +159,11 @@ def edit_game():
         if 'select_game' in request.form:
             game_id = request.form['Game']
             game_details = get_game(game_id)
-            # Selected game to display by default in drop down menu
+            # Selected game to persist in drop down menu during the next render
             selected_game = {'game_id': game_id, 'home_team': game_details['home_team'], 'away_team': game_details['away_team'], 'date': game_details['date']}
             curr_ref = game_details['ref_first_name'] + " " + game_details['ref_last_name']
             teams = [game_details['home_team'], game_details['away_team']]
+            # Populate the page with data from the selected game, denoted by variables beginning with curr
             return render_template('editGame.html', games=games, selected_game=selected_game, curr_ref=curr_ref, curr_location=game_details['location'], 
                 referees=get_referees(), curr_date=game_details['date'], curr_time=game_details['time'], curr_win_team=game_details['win_team'], teams=teams)
         # Submitting updates
@@ -183,6 +185,7 @@ def edit_game():
                 flash("Successful submission!")
             else:
                 flash("Please enter all fields")
+    # Default render with no selected game (fields on page will be blank)
     return render_template('editGame.html', games=games, selected_game=None)
 
 def get_teams():

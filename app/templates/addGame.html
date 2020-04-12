@@ -23,18 +23,22 @@
           <h2>Enter Details Below</h2>
         </div>
         <div class="info">
+          <!-- Dropdown to select home team -->
           <select class="input-manage" name="Home_team">
               <option class="dropdown-content" value="NULL">Home Team</option>
               {% for team in teams %}
                   <option class="dropdown-content" value="{{team['team_name']}}">{{team['team_name']}}</option>
               {% endfor %}
             </select>
+          <!-- Dropdown for away team selection -->
+          <!-- Note: logic for ensuring away team != home team is completed on the back-end -->
           <select class="input-manage" name="Away_team">
             <option class="dropdown-content" value="NULL">Away Team</option>
             {% for team in teams %}
                 <option class="dropdown-content" value="{{team['team_name']}}">{{team['team_name']}}</option>
             {% endfor %}
           </select>
+          <!-- Dropdown for referee selection -->
           <select class="input-manage" name="Referee">
             <option class="dropdown-content" value="NULL">Referee</option>
             {% for referee in referees %}
@@ -43,9 +47,11 @@
           </select>
           <input class="input-manage" type="text" name="Location" placeholder= "Location"/>
           <input class="input-manage" type="date" name="Date">
+          <!-- Open text field for time because default bootstrap time was not 24hr format, can change if necessary -->
           <input class="input-manage" type="text" name="Time" placeholder= "hh:mm (24 hr)"/>
         </div>
         <button class="btn-manage-submit" type="submit">Submit</button>
+        <!-- Flash messages to inform user of request status -->
         {% with messages = get_flashed_messages() %}
           {% if messages %}
             {% for message in messages %}
