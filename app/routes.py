@@ -18,6 +18,16 @@ def after_request(response):
 db = SQL("sqlite:///app/league.db")
 
 @app.route('/')
+def home():
+    # load announcements
+    result = db.execute(
+        "SELECT * FROM Announcements \
+            ORDER BY a_id DESC"
+        )
+    return render_template("home.html", announcements = result)
+
+
+# pass info in to index.html
 @app.route('/index')
 def index():
     result = db.execute(
@@ -46,7 +56,7 @@ def roster():
             LEFT JOIN Roster ON Player.roster_id = Roster.roster_id\
             LEFT JOIN Team ON Team.roster_id = Player.roster_id\
             WHERE Team.team_name=?\
-            ORDER BY User.first_name", 
+            ORDER BY User.first_name",
             team_name
         )
         selected = team_name if len(players) != 0 else selected
@@ -62,7 +72,7 @@ def schedule():
                 LEFT JOIN Team as AwayTeam on Game.away_id = AwayTeam.team_id\
                 LEFT JOIN Team as WinTeam on Game.winner_id = WinTeam.team_id"
     order_query = "\nORDER BY Game.date, Game.time"
-        
+
     if request.method == 'POST':
         team_name = request.form['Team']
         if team_name != 'View all': # a specific team was selected
@@ -70,7 +80,7 @@ def schedule():
             games = db.execute(games_query + team_selection_query + order_query, team_name, team_name)
             selected = team_name if len(games) != 0 else selected
             return render_template("schedule.html", teams=team_names, games=games, selection=selected)
-    
+
     #Below is executed for GET requests and 'View all', returns all games
     games = db.execute(games_query + order_query)
     return render_template("schedule.html", teams=team_names, games=games, selection=selected)
@@ -90,8 +100,8 @@ def addPlayer():
         Email = playerDetails['Email']
         Phone_num = playerDetails['Phone_num']
     return render_template('addPlayer.html')
-    
-    
+
+
 @app.route('/addGame', methods =['GET', 'POST'])
 def addGame():
     team_names = get_teams()
