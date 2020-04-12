@@ -21,6 +21,16 @@ def after_request(response):
 db = SQL("sqlite:///app/league.db")
 
 @app.route('/')
+def home():
+    # load announcements
+    result = db.execute(
+        "SELECT * FROM Announcements \
+            ORDER BY a_id DESC"
+        )
+    return render_template("home.html", announcements = result)
+
+
+# pass info in to index.html
 @app.route('/index')
 def index():
     result = db.execute(
@@ -49,7 +59,7 @@ def roster():
             LEFT JOIN Roster ON Player.roster_id = Roster.roster_id\
             LEFT JOIN Team ON Team.roster_id = Player.roster_id\
             WHERE Team.team_name=?\
-            ORDER BY User.first_name", 
+            ORDER BY User.first_name",
             team_name
         )
         selected = team_name if len(players) != 0 else selected
@@ -65,7 +75,7 @@ def schedule():
                 LEFT JOIN Team as AwayTeam on Game.away_id = AwayTeam.team_id\
                 LEFT JOIN Team as WinTeam on Game.winner_id = WinTeam.team_id"
     order_query = "\nORDER BY Game.date, Game.time"
-        
+
     if request.method == 'POST':
         team_name = request.form['Team']
         if team_name != 'View all': # a specific team was selected
@@ -73,7 +83,7 @@ def schedule():
             games = db.execute(games_query + team_selection_query + order_query, team_name, team_name)
             selected = team_name if len(games) != 0 else selected
             return render_template("schedule.html", teams=team_names, games=games, selection=selected)
-    
+
     #Below is executed for GET requests and 'View all', returns all games
     games = db.execute(games_query + order_query)
     return render_template("schedule.html", teams=team_names, games=games, selection=selected)
@@ -100,7 +110,7 @@ def add_player():
         else:
             flash("Please enter all fields")
     return render_template('addPlayer.html')
-    
+
 @app.route('/editPlayer', methods =['GET', 'POST'])
 def editPlayer():
     if request.method == 'POST':
@@ -141,7 +151,7 @@ def add_game():
                         (SELECT Team.team_id FROM Team WHERE Team.team_name=?),\
                         (SELECT Team.team_id FROM Team WHERE Team.team_name=?),\
                         (SELECT User.user_id FROM Referee LEFT JOIN User WHERE User.first_name=? AND User.last_name=?))",
-                        game_details['Date'], game_details['Time'], game_details['Location'], 
+                        game_details['Date'], game_details['Time'], game_details['Location'],
                         game_details['Home_team'], game_details['Away_team'], ref_first_name, ref_last_name
                 )
                 flash("Successful submission!")
@@ -164,7 +174,7 @@ def edit_game():
             curr_ref = game_details['ref_first_name'] + " " + game_details['ref_last_name']
             teams = [game_details['home_team'], game_details['away_team']]
             # Populate the page with data from the selected game, denoted by variables beginning with curr
-            return render_template('editGame.html', games=games, selected_game=selected_game, curr_ref=curr_ref, curr_location=game_details['location'], 
+            return render_template('editGame.html', games=games, selected_game=selected_game, curr_ref=curr_ref, curr_location=game_details['location'],
                 referees=get_referees(), curr_date=game_details['date'], curr_time=game_details['time'], curr_win_team=game_details['win_team'], teams=teams)
         # Submitting updates
         elif 'submit' in request.form:
@@ -179,7 +189,7 @@ def edit_game():
                     location=?, date=?, time=?,\
                     ref_id = (SELECT User.user_id FROM Referee LEFT JOIN User WHERE User.first_name=? AND User.last_name=?)\
                     WHERE Game.game_id=?",
-                    updates['Win_team'], updates['Location'], updates['Date'], updates['Time'], 
+                    updates['Win_team'], updates['Location'], updates['Date'], updates['Time'],
                     ref_first_name, ref_last_name, game_id
                 )
                 flash("Successful submission!")
